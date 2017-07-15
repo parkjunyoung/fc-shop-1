@@ -1,4 +1,5 @@
 var express = require('express');
+var path = require('path');
 
 //MongoDB 접속
 var mongoose = require('mongoose');
@@ -17,6 +18,10 @@ var admin = require('./routes/admin');
 
 var app = express();
 var port = 3000;
+
+// 확장자가 ejs 로 끈나는 뷰 엔진을 추가한다.
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
 
 
 app.get('/', function(req,res){
