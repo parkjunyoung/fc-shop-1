@@ -7,9 +7,11 @@ router.get('/', function(req,res){
 });
 
 router.get('/products', function(req,res){
-    res.render( 'admin/products' , 
-        { message : "hello" } // message 란 변수를 템플릿으로 내보낸다.
-    );
+    ProductsModel.find( function(err,products){ //첫번째 인자는 err, 두번째는 받을 변수명
+        res.render( 'admin/products' , 
+            { products : products } // DB에서 받은 products를 products변수명으로 내보냄
+        );
+    });
 });
 
 router.get('/products/write', function(req,res){
@@ -23,7 +25,7 @@ router.post('/products/write', function(req,res){
         description : req.body.description,
     });
     product.save(function(err){
-        res.redirect('/admin');
+        res.redirect('/admin/products');
     });
 });
 

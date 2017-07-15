@@ -5,6 +5,7 @@ var bodyParser = require('body-parser');
 
 //MongoDB 접속
 var mongoose = require('mongoose');
+mongoose.Promise = global.Promise;
 var autoIncrement = require('mongoose-auto-increment');
 
 var db = mongoose.connection;
