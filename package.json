@@ -9,7 +9,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.15.3"
+    "express": "^4.15.3",
+    "mongodb": "^2.2.30",
+    "mongoose": "^4.11.2",
+    "mongoose-auto-increment": "^5.0.1"
   },
   "repository": {
     "type": "git",
