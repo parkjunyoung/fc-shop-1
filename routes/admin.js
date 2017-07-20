@@ -15,7 +15,8 @@ router.get('/products', function(req,res){
 });
 
 router.get('/products/write', function(req,res){
-    res.render( 'admin/form');
+    //edit에서도 같은 form을 사용하므로 빈 변수( product )를 넣어서 에러를 피해준다
+    res.render( 'admin/form' , { product : "" }); 
 });
 
 router.post('/products/write', function(req,res){
@@ -54,6 +55,12 @@ router.post('/products/edit/:id', function(req, res){
     //update의 첫번째 인자는 조건, 두번째 인자는 바뀔 값들
     ProductsModel.update({ id : req.params.id }, { $set : query }, function(err){
         res.redirect('/admin/products/detail/' + req.params.id ); //수정후 본래보던 상세페이지로 이동
+    });
+});
+
+router.get('/products/delete/:id', function(req, res){
+    ProductsModel.remove({ id : req.params.id }, function(err){
+        res.redirect('/admin/products');
     });
 });
 
