@@ -16,6 +16,25 @@
 
             <%=product.description%>
 
+            <!-- 댓글영역  -->
+            <hr />
+            <div id="comment_area">
+                <% comments.forEach( function(comment){ %>
+                    <div><%=comment.content%></div>
+                <%});%>
+            </div>
+
+            <div id="comment_area"></div>
+            <div>
+                댓글작성하기
+                <form id="commentForm" action="" method="post">
+                    <input type="hidden" name="product_id" value="<%=product.id%>" />
+                    <textarea class="form-control" name="content"></textarea>
+                    <button class="btn btn-primary" style="margin-top: 10px">댓글작성</button>
+                </form>
+            </div>
+            <!-- 댓글영역  -->
+
 
         </div>
     </div>
@@ -23,9 +42,35 @@
     <a href="/admin/products" class="btn btn-default">목록으로</a>
     <a href="/admin/products/edit/<%=product.id%>" class="btn btn-primary">수정</a>
 
-    
-
-        
-
+<script>
+(function(){
+    $(document).ready(function() {
+        $('#commentForm').submit(function(){
+            var $contentVal = $(this).children('textarea[name=content]').val();
+            if($contentVal){
+                $.ajax({
+                    url: '/admin/products/ajax_comment/insert',
+                    type: 'POST',
+                    data: $(this).serialize(),
+                })
+                .done(function(args) {
+                    if(args.message==="success"){
+                        $('#comment_area').append(
+                            '<div>' + args.content + '</div>'
+                        );
+                        $('#commentForm textarea[name=content]').val("");
+                    }
+                })
+                .fail(function(args) {
+                    console.log(args);
+                });
+            }else{
+                alert('댓글 내용을 입력해주세요.')
+            }
+            return false;
+        });
+    });
+})();
+</script>
 
 <% include ../footer.ejs %>
