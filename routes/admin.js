@@ -26,9 +26,14 @@ router.post('/products/write', function(req,res){
         price : req.body.price,
         description : req.body.description,
     });
-    product.save(function(err){
-        res.redirect('/admin/products');
-    });
+    var validationError = product.validateSync();
+    if(validationError){
+        res.send(validationError);
+    }else{
+        product.save(function(err){
+            res.redirect('/admin/products');
+        });
+    }
 });
 
 router.get('/products/detail/:id' , function(req, res){
