@@ -83,4 +83,10 @@ router.post('/products/ajax_comment/insert', function(req,res){
 
 });
 
+router.post('/products/ajax_comment/delete', function(req, res){
+    CommentsModel.remove({ id : req.body.comment_id } , function(err){
+        res.json({ message : "success" });
+    });
+});
+
 module.exports = router;
