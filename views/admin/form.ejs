@@ -1,10 +1,19 @@
 <% include ../header.ejs %>
-    <form action="" method="post">
+    <form action="" method="post" enctype="multipart/form-data">
         <input type="hidden" name="_csrf" value="<%=csrfToken%>" />
         <table class="table table-bordered">
             <tr>
                 <th>제품명</th>
                 <td><input type="text" name="name" class="form-control" value="<%=product.name%>"/></td>
+            </tr>
+            <tr>
+                <th>섬네일</th>
+                <td>
+                    <input type="file" name="thumbnail" />
+                    <% if(product.thumbnail){ %>
+                        <a href="/uploads/<%=product.thumbnail%>" target="_blank">업로드 이미지 보기</a>
+                    <% } %>
+                </td>
             </tr>
             <tr>
                 <th>가격</th>
