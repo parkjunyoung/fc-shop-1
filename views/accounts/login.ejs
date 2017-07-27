@@ -1,6 +1,9 @@
 <% include ../header.ejs %>
 <div class="row">
     <div class="col-md-4 col-md-offset-4">
+        <%if(typeof flashMessage !=='undefined') {%>
+            <div class="alert alert-danger" role="alert"><%=flashMessage%></div>
+        <%}%>
         <div class="login-panel panel panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title">로그인</h3>
