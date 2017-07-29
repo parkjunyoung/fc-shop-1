@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var ProductsModel = require('../models/ProductsModel');
 var CommentsModel = require('../models/CommentsModel');
+var loginRequired = require('../libs/loginRequired');
 
 // csrf 셋팅
 var csrf = require('csurf');
@@ -37,17 +38,18 @@ router.get('/products', function(req,res){
     });
 });
 
-router.get('/products/write', csrfProtection , function(req,res){
+router.get('/products/write',loginRequired, csrfProtection , function(req,res){
     //edit에서도 같은 form을 사용하므로 빈 변수( product )를 넣어서 에러를 피해준다
     res.render( 'admin/form' , { product : "", csrfToken : req.csrfToken() }); 
 });
 
-router.post('/products/write', upload.single('thumbnail'), csrfProtection, function(req,res){
+router.post('/products/write', loginRequired , upload.single('thumbnail'), csrfProtection, function(req,res){
     var product = new ProductsModel({
         name : req.body.name,
         thumbnail : (req.file) ? req.file.filename : "",
         price : req.body.price,
         description : req.body.description,
+        username : req.user.username
     });
     var validationError = product.validateSync();
     if(validationError){
@@ -69,14 +71,14 @@ router.get('/products/detail/:id' , function(req, res){
     });
 });
 
-router.get('/products/edit/:id' , csrfProtection ,function(req, res){
+router.get('/products/edit/:id' ,loginRequired, csrfProtection ,function(req, res){
     //기존에 폼에 value안에 값을 셋팅하기 위해 만든다.
     ProductsModel.findOne({ id : req.params.id } , function(err, product){
         res.render('admin/form', { product : product, csrfToken : req.csrfToken() });
     });
 });
 
-router.post('/products/edit/:id', upload.single('thumbnail'), csrfProtection, function(req, res){
+router.post('/products/edit/:id', loginRequired, upload.single('thumbnail'), csrfProtection, function(req, res){
     //그전에 지정되 있는 파일명을 받아온다
     ProductsModel.findOne( {id : req.params.id} , function(err, product){
         
