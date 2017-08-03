@@ -30,6 +30,7 @@ var accounts = require('./routes/accounts');
 var auth = require('./routes/auth');
 var home = require('./routes/home.js');
 var chat = require('./routes/chat');
+var products = require('./routes/products');
 
 var app = express();
 var port = 3000;
@@ -85,6 +86,7 @@ app.use('/admin', admin);
 app.use('/accounts', accounts);
 app.use('/auth', auth);
 app.use('/chat', chat);
+app.use('/products', products);
 app.use('/', home);
 
 var server = app.listen( port, function(){
