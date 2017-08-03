@@ -1,12 +1,24 @@
 <% include ../header.ejs %>
-
-    <div class="panel panel-default" id="chatWrap">
-        <div class="panel-heading">대화내용</div>
-        <div class="panel-body">
-            <ul id="chatBody"></ul>
+<div class="row">
+    <div class="col-sm-10">
+        <div class="panel panel-default" id="chatWrap">
+            <div class="panel-heading">대화내용</div>
+            <div class="panel-body">
+                <ul id="chatBody"></ul>
+            </div>
         </div>
     </div>
+    <div class="col-sm-2">
+        <div class="panel panel-default" id="userWrap">
+            <div class="panel-heading">User</div>
+            <div class="panel-body">
+                <ul id="userList"></ul>  
+            </div>
+        </div>
+    </div>    
+</div>
 
+<div>
     <form action="" method="post" id="sendForm">
 
         <div class="input-group">
@@ -19,7 +31,7 @@
 
     </form>  
 
-
+</div>
 
 <style type="text/css">
 .panel-default ul { padding-left:0px; }
@@ -35,11 +47,25 @@
 <script>
 (function(){
     var socket = io();
- 
-    socket.on('server message', function(data){
-        $('#chatBody').append('<li>' + data + '</li>');
+
+    function updateUserList(userList){
+        $('#userList').html("");
+        for(var key in userList){
+            $('#userList').append('<li>' + userList[key] + '</li>');
+        }
+    }
+
+    socket.on('join', function(data){
+        updateUserList(data);
+    });
+
+    socket.on('leave', function(data){
+        updateUserList(data);
     });
  
+    socket.on('server message', function(data){
+        $('#chatBody').append('<li><strong>'+ data.displayname +'</strong>' + data.message + '</li>');
+    });
     $(document).ready(function() {
         $('#sendForm').submit(function(){
             var $massage = $('#sendForm input[name=message]');
