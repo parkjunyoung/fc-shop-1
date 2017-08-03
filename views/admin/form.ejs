@@ -41,8 +41,27 @@ $(document).ready(function(){
     $('#summernote').summernote({
         lang: 'ko-KR',
 		height: 300,
+		callbacks : {
+			onImageUpload: function(files) {
+                sendFile(files[0]);
+			}
+		}
     });
-
+    function sendFile(file, editor, welEditable) {
+		data = new FormData();
+		data.append("thumbnail", file);
+		$.ajax({
+			data: data,
+			type: "POST",
+			url: '/admin/products/ajax_summernote/',
+			cache: false,
+			contentType: false,
+			processData: false,
+			success: function(url) {
+				$('#summernote').summernote("insertImage", url);
+			}
+		});
+	}
 
 });
 </script>
