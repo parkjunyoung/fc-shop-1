@@ -24,7 +24,7 @@
 
             <hr />
 
-    <form action="" method="post">
+    <form action="" id="cartForm" method="post">
 
             <!--가격 -->
             <input type="hidden" name="price" value="<%=product.price%>">
@@ -112,6 +112,40 @@ $(document).ready(function(){
         $('#priceHtml').html(cartNum * price);
         
 
+    });
+
+    $('#cartForm').submit(function(){
+        if(confirm('장바구니에 담겠습니까?')){
+            //장바구니에 담길 ID,사진,이름을 받는다
+            var productId = <%=product.id%>;
+            var thumbnail = "<%=product.thumbnail%>";
+            var name = "<%=product.name%>";
+
+            //갯수와 총량을 담는다.
+            var number = $('input[name=number]').val();
+            var amount = $('input[name=amount]').val();
+
+            var cartList = {};
+            var totalAmount = 0;
+            if( getCookie('cartList') ){ 
+                //쿠키에서 검색후 있으면 json 파싱함
+                cartList = JSON.parse(getCookie('cartList'));
+            }
+
+            cartList[productId] = { 
+                number : number , 
+                amount : amount ,
+                thumbnail : thumbnail,
+                name : name,
+            };
+            
+            // string으로 저장되는데 나중에 {}형식으로 받기위해 stringfy로 저장
+            setCookieHour( "cartList" , JSON.stringify(cartList) , 3 );
+
+            alert("장바구니에 담았습니다.");
+        }
+
+        return false;
     });
 
 });

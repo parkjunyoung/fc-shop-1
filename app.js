@@ -48,6 +48,10 @@ app.use(cookieParser());
 //업로드 path 추가
 app.use('/uploads', express.static('uploads'));
 
+//static path 추가
+app.use('/static', express.static('static'));
+
+
 //session 관련 셋팅
 var connectMongo = require('connect-mongo');
 var MongoStore = connectMongo(session);
