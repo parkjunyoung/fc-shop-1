@@ -21,7 +21,7 @@
                 <td><%=cartList[key].number%></td>
                 <td><%=cartList[key].amount%> 원</td>
                 <td>
-                    <a href="#" class="btn btn-danger">삭제</a>
+                    <a href="#" class="deleteCart btn btn-danger" productId="<%=key%>">삭제</a>
                 </td>
             </tr>
         <%
@@ -43,7 +43,32 @@
         <a href="/checkout" class="btn btn-primary">결제하기</a>
     </div>
 
+<script>
+$(document).ready(function(){
 
+
+    $('.deleteCart').click(function(event){
+        event.preventDefault(); //href의 링크로 넘어가게 하지 않는다.
+        if(confirm('삭제하시겠습니까?')){
+            var productId = $(this).attr('productId'); //아이디를 받아온다
+            //productId로 찾아서 delete로 날린다
+            let cartList = {};
+            if( getCookie('cartList') ){ //있으면 json 파싱함
+                cartList = JSON.parse(getCookie('cartList'));
+                delete cartList[productId];  //지우는 부분
+            }
+            //다시쿠키 설정
+            setCookieHour( "cartList" , JSON.stringify(cartList) , 3 );
+
+            //완료후 다시 cart 페이지로 이동
+            document.location.href = "/cart";
+        }
+
+    });
+
+});
+
+</script>
 
 
 <% include ../footer.ejs %>
