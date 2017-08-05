@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var CheckoutModel = require('../models/CheckoutModel');
 
 router.get('/' , function(req, res){
     
@@ -16,6 +17,55 @@ router.get('/' , function(req, res){
         }
     }
     res.render('checkout/index', { cartList : cartList , totalAmount : totalAmount } );
+});
+
+router.post('/complete', (req,res)=>{
+
+    var checkout = new CheckoutModel({
+        imp_uid : req.body.imp_uid,
+        merchant_uid : req.body.merchant_uid,
+        paid_amount : req.body.paid_amount,
+        apply_num : req.body.apply_num,
+        
+        buyer_email : req.body.buyer_email,
+        buyer_name : req.body.buyer_name,
+        buyer_tel : req.body.buyer_tel,
+        buyer_addr : req.body.buyer_addr,
+        buyer_postcode : req.body.buyer_postcode,
+
+        status : req.body.status,
+    });
+
+    checkout.save(function(err){
+        res.json({message:"success"});
+    });
+
+});
+ 
+ 
+router.post('/mobile_complete', (req,res)=>{
+    var checkout = new CheckoutModel({
+        imp_uid : req.body.imp_uid,
+        merchant_uid : req.body.merchant_uid,
+        paid_amount : req.body.paid_amount,
+        apply_num : req.body.apply_num,
+        
+        buyer_email : req.body.buyer_email,
+        buyer_name : req.body.buyer_name,
+        buyer_tel : req.body.buyer_tel,
+        buyer_addr : req.body.buyer_addr,
+        buyer_postcode : req.body.buyer_postcode,
+
+        status : req.body.status,
+    });
+
+    checkout.save(function(err){
+        res.json({message:"success"});
+    });
+});
+
+router.get('/success', function(req,res){
+    res.render('checkout/success');
 });
 
 
