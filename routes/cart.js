@@ -8,7 +8,7 @@ router.get('/' , function(req, res){
     //쿠키가 있는지 확인해서 뷰로 넘겨준다
     if( typeof(req.cookies.cartList) !== 'undefined'){
         //장바구니데이터
-        var cartList = JSON.parse(req.cookies.cartList);
+        var cartList = JSON.parse(unescape(req.cookies.cartList));
 
         //총가격을 더해서 전달해준다.
         for( let key in cartList){
