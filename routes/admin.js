@@ -3,7 +3,7 @@ var router = express.Router();
 var ProductsModel = require('../models/ProductsModel');
 var CommentsModel = require('../models/CommentsModel');
 var CheckoutModel = require('../models/CheckoutModel');
-var loginRequired = require('../libs/loginRequired');
+var adminRequired = require('../libs/adminRequired');
 var co = require('co');
 
 // csrf 셋팅
@@ -32,7 +32,7 @@ router.get('/', function(req,res){
     res.send('admin app');
 });
 
-router.get('/products', function(req,res){
+router.get('/products', adminRequired, function(req,res){
     ProductsModel.find( function(err,products){ //첫번째 인자는 err, 두번째는 받을 변수명
         res.render( 'admin/products' , 
             { products : products } // DB에서 받은 products를 products변수명으로 내보냄
@@ -40,12 +40,12 @@ router.get('/products', function(req,res){
     });
 });
 
-router.get('/products/write',loginRequired, csrfProtection , function(req,res){
+router.get('/products/write',adminRequired, csrfProtection , function(req,res){
     //edit에서도 같은 form을 사용하므로 빈 변수( product )를 넣어서 에러를 피해준다
     res.render( 'admin/form' , { product : "", csrfToken : req.csrfToken() }); 
 });
 
-router.post('/products/write', loginRequired , upload.single('thumbnail'), csrfProtection, function(req,res){
+router.post('/products/write', adminRequired , upload.single('thumbnail'), csrfProtection, function(req,res){
     var product = new ProductsModel({
         name : req.body.name,
         thumbnail : (req.file) ? req.file.filename : "",
@@ -77,14 +77,14 @@ router.get('/products/detail/:id' , function(req, res){
     });
 });
 
-router.get('/products/edit/:id' ,loginRequired, csrfProtection ,function(req, res){
+router.get('/products/edit/:id' ,adminRequired, csrfProtection ,function(req, res){
     //기존에 폼에 value안에 값을 셋팅하기 위해 만든다.
     ProductsModel.findOne({ id : req.params.id } , function(err, product){
         res.render('admin/form', { product : product, csrfToken : req.csrfToken() });
     });
 });
 
-router.post('/products/edit/:id', loginRequired, upload.single('thumbnail'), csrfProtection, function(req, res){
+router.post('/products/edit/:id', adminRequired, upload.single('thumbnail'), csrfProtection, function(req, res){
     //그전에 지정되 있는 파일명을 받아온다
     ProductsModel.findOne( {id : req.params.id} , function(err, product){
         
@@ -134,11 +134,11 @@ router.post('/products/ajax_comment/delete', function(req, res){
     });
 });
 
-router.post('/products/ajax_summernote', loginRequired, upload.single('thumbnail'), function(req,res){
+router.post('/products/ajax_summernote', adminRequired, upload.single('thumbnail'), function(req,res){
     res.send( '/uploads/' + req.file.filename);
 });
 
-router.get('/order', function(req,res){
+router.get('/order', adminRequired, function(req,res){
     CheckoutModel.find( function(err, orderList){ //첫번째 인자는 err, 두번째는 받을 변수명
         res.render( 'admin/orderList' , 
             { orderList : orderList }
@@ -146,7 +146,7 @@ router.get('/order', function(req,res){
     });
 });
 
-router.get('/order/edit/:id', function(req,res){
+router.get('/order/edit/:id', adminRequired, function(req,res){
     CheckoutModel.findOne( { id : req.params.id } , function(err, order){
         res.render( 'admin/orderForm' , 
             { order : order }
