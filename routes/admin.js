@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var ProductsModel = require('../models/ProductsModel');
 var CommentsModel = require('../models/CommentsModel');
+var CheckoutModel = require('../models/CheckoutModel');
 var loginRequired = require('../libs/loginRequired');
 var co = require('co');
 
@@ -135,6 +136,22 @@ router.post('/products/ajax_comment/delete', function(req, res){
 
 router.post('/products/ajax_summernote', loginRequired, upload.single('thumbnail'), function(req,res){
     res.send( '/uploads/' + req.file.filename);
+});
+
+router.get('/order', function(req,res){
+    CheckoutModel.find( function(err, orderList){ //첫번째 인자는 err, 두번째는 받을 변수명
+        res.render( 'admin/orderList' , 
+            { orderList : orderList }
+        );
+    });
+});
+
+router.get('/order/edit/:id', function(req,res){
+    CheckoutModel.findOne( { id : req.params.id } , function(err, order){
+        res.render( 'admin/orderForm' , 
+            { order : order }
+        );
+    });
 });
 
 module.exports = router;
