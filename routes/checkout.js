@@ -68,5 +68,14 @@ router.get('/success', function(req,res){
     res.render('checkout/success');
 });
 
+router.get('/nomember', function(req,res){
+    res.render('checkout/nomember.ejs');
+});
+
+router.get('/nomember/search', function(req,res){
+    CheckoutModel.find({ buyer_email : req.query.email }, function(err, checkoutList){
+        res.render('checkout/search', { checkoutList : checkoutList } );
+    });
+});
 
 module.exports = router;
