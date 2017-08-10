@@ -34,5 +34,11 @@ CheckoutSchema.virtual('getDate').get(function(){
     };
 });
 
+CheckoutSchema.virtual('getAmountFormat').get(function(){
+    // 1000원을 1,000원으로 바꿔준다.
+    return new Intl.NumberFormat().format(this.paid_amount);
+});
+
+
 CheckoutSchema.plugin( autoIncrement.plugin , { model: "checkout", field : "id", startAt : 1 });
 module.exports = mongoose.model( "checkout", CheckoutSchema);
