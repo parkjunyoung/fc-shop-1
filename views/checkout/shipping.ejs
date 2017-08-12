@@ -1,0 +1,28 @@
+<% include ../header.ejs %>
+
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>단계</th>
+                <th>처리</th>
+                <th>상품상태</th>
+                <th>위치</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% for(var key in result){ 
+                    if(typeof result[key] === 'object'){%>
+                    <tr>
+                        <td><%=result[key].step%></td>
+                        <td><%=result[key].date%></td>
+                        <td><%=result[key].status%></td>
+                        <td><%=result[key].location%></td>
+                    </tr>
+            <%
+                    }
+                }
+            %>
+        </tbody>
+    </table>
+
+<% include ../footer.ejs %>

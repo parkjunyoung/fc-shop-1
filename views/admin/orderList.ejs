@@ -19,7 +19,12 @@
                         <%=order.buyer_name%> ( <%=order.buyer_email%> )
                     </a>
                 </td>
-                <td><%=order.status%></td>
+                <td>
+                    <%=order.status%> 
+                    <%if(order.status==='배송중'){%>
+                        <a href="/checkout/shipping/<%=order.song_jang%>">( 위치추적 )</a>
+                    <%}%>
+                </td>
                 <td><%=order.getAmountFormat%> 원</td>
                 <td><%=order.buyer_addr%></td>
                 <td>
