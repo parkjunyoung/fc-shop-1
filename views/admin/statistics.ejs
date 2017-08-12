@@ -1,0 +1,78 @@
+<% include ../header.ejs %>
+
+    <% include ./sidebar.ejs %>
+
+    <div class="col-sm-10">
+        <div class="panel panel-default">
+            <div class="panel-heading">통계 현황</div>
+            <div class="panel-body">
+                 <div id="columnChart"></div>
+                 <div id="pieChart"></div>
+            </div>
+        </div>
+
+    </div>
+
+<!--모듈 로딩 -->
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script>
+//차트 로딩 시작
+google.charts.load("current", {packages:["corechart"]});
+//막대기 차트를 그린다. 인자로 함수를 지정
+google.charts.setOnLoadCallback(drawbar);
+
+function drawbar() {
+  var data = google.visualization.arrayToDataTable([
+
+    //첫줄은 [ x축, y축, 상단에 나올숫자 의미 ]
+    ['날짜', '결제자수', { role: 'annotation' } ],
+    
+    //그다음부터 데이터
+    <% for( key in barData ){
+        if(typeof barData[key] === 'number'){
+      %>
+        ["<%=key%>", <%=barData[key]%> , "(<%=barData[key]%>)"],
+    <%
+          }
+        }
+    %>
+  ]);
+
+  //차트 상단에 나올 제목, 차트 전체에 세로 길이등을 지정
+  var options = {
+    title: '결제자수',
+    height: 400,
+    chartArea: {width: '50%'},
+  };
+
+  var chart = new google.visualization.ColumnChart(
+      document.getElementById('columnChart')
+  );
+  chart.draw(data, options);
+}
+
+// 파이 차트(원형 도넛)를 그린다.
+google.charts.setOnLoadCallback(drawpie);
+function drawpie() {
+  var data = google.visualization.arrayToDataTable([
+    ['Task', 'Hours per Day'],
+    
+    <% for( key in pieData ){
+        if(typeof pieData[key] === 'number'){
+      %>
+        ['<%=key%>',  <%=pieData[key]%>],
+    <%
+          }
+        }
+    %>
+  ]);
+
+var options = {
+  title: '상품상태',
+};
+
+  var chart = new google.visualization.PieChart(document.getElementById('pieChart'));
+  chart.draw(data, options);
+}
+</script>
+<% include ../footer.ejs %>
