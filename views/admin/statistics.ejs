@@ -28,14 +28,11 @@ function drawbar() {
     ['날짜', '결제자수', { role: 'annotation' } ],
     
     //그다음부터 데이터
-    <% for( key in barData ){
-        if(typeof barData[key] === 'number'){
-      %>
-        ["<%=key%>", <%=barData[key]%> , "(<%=barData[key]%>)"],
-    <%
-          }
-        }
-    %>
+    <% barData.forEach(function(value){ %>
+        ["<%=value._id.year%>-<%=value._id.month%>-<%=value._id.day%>"
+         , <%=value.count%> 
+         , "(<%=value.count%>)"],
+    <% }) %>
   ]);
 
   //차트 상단에 나올 제목, 차트 전체에 세로 길이등을 지정
@@ -57,14 +54,9 @@ function drawpie() {
   var data = google.visualization.arrayToDataTable([
     ['Task', 'Hours per Day'],
     
-    <% for( key in pieData ){
-        if(typeof pieData[key] === 'number'){
-      %>
-        ['<%=key%>',  <%=pieData[key]%>],
-    <%
-          }
-        }
-    %>
+    <% pieData.forEach(function(value){ %>
+        ['<%=value._id%>',  <%=value.count%>],
+    <% }) %>
   ]);
 
 var options = {

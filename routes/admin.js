@@ -165,34 +165,32 @@ router.post('/order/edit/:id', adminRequired, function(req,res){
     });
 });
 
-router.get('/statistics', adminRequired, function(req,res){
-    CheckoutModel.find( function(err, orderList){ 
+router.get('/statistics', adminRequired, async(req,res) => {
 
-        var barData = [];   // 넘겨줄 막대그래프 데이터 초기값 선언
-        var pieData = [];   // 원차트에 넣어줄 데이터 삽입
-        orderList.forEach(function(order){
-            // 08-10 형식으로 날짜를 받아온다
-            var date = new Date(order.created_at);
-            var monthDay = (date.getMonth()+1) + '-' + date.getDate();
-            
-            // 날짜에 해당하는 키값으로 조회
-            if(monthDay in barData){
-                barData[monthDay]++; //있으면 더한다
-            }else{
-                barData[monthDay] = 1; //없으면 초기값 1넣어준다.
-            }
+    // 년-월-일 을 키값으로 몇명이 결제했는지 확인한다
+    // barData._id.count 결제자수에 접근
+    var barData = await 
+        CheckoutModel.aggregate(
+            [ 
+                { $sort : { created_at : -1 } },
+                { 
+                    $group : {  
+                        _id : { 
+                            year: { $year: "$created_at" },
+                            month: { $month: "$created_at" }, 
+                            day: { $dayOfMonth: "$created_at" }
+                        }, 
+                        count: { $sum: 1 } 
+                    } 
+                } 
+            ]
+        ).exec()
 
-            // 결재 상태를 검색해서 조회
-            if(order.status in pieData){
-                pieData[order.status]++; //있으면 더한다
-            }else{
-                pieData[order.status] = 1; //없으면 결재상태+1
-            }
-
-        });
-
-        res.render('admin/statistics' , { barData : barData , pieData:pieData });
-    });
+    // 배송중, 배송완료, 결제완료자 수를 구한다
+    var pieData = await CheckoutModel.aggregate([ 
+        { $group : { _id : "$status", count: { $sum: 1 } } } ]).exec()
+    res.render('admin/statistics' , { barData : barData , pieData:pieData });
+    
 });
 
 module.exports = router;
