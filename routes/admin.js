@@ -168,9 +168,9 @@ router.post('/order/edit/:id', adminRequired, function(req,res){
 router.get('/statistics', adminRequired, async(req,res) => {
 
     // 년-월-일 을 키값으로 몇명이 결제했는지 확인한다
-    // barData._id.count 결제자수에 접근
-    var barData = await 
-        CheckoutModel.aggregate(
+    // barData[0]._id.count 결제자수에 접근
+    var barData = [];
+    var cursor = CheckoutModel.aggregate(
             [ 
                 { $sort : { created_at : -1 } },
                 { 
@@ -184,11 +184,26 @@ router.get('/statistics', adminRequired, async(req,res) => {
                     } 
                 } 
             ]
-        ).exec()
+        ).cursor({ batchSize: 1000 }).exec();
 
-    // 배송중, 배송완료, 결제완료자 수를 구한다
-    var pieData = await CheckoutModel.aggregate([ 
-        { $group : { _id : "$status", count: { $sum: 1 } } } ]).exec()
+    await cursor.eachAsync(function(doc) {
+        if(doc !== null){
+            barData.push(doc)
+        }
+    });
+
+    var pieData = [];
+    // 배송중, 배송완료, 결제완료자 수로 묶는다
+    var cursor = CheckoutModel.aggregate([ 
+        { $group : { _id : "$status", count: { $sum: 1 } } } ])
+        .cursor({ batchSize: 1000 }).exec();
+    
+    await cursor.eachAsync(function(doc) {
+        if(doc !== null){
+            pieData.push(doc)
+        }
+    });
+
     res.render('admin/statistics' , { barData : barData , pieData:pieData });
     
 });
