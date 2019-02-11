@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-var autoIncrement = require('mongoose-auto-increment');
+var { autoIncrement } = require('mongoose-plugin-autoinc');
 
 //생성될 필드명을 정한다.
 var ProductsSchema = new Schema({
@@ -34,5 +34,5 @@ ProductsSchema.virtual('getDate').get(function(){
 // 1씩 증가하는 primary Key를 만든다
 // model : 생성할 document 이름
 // field : primary key , startAt : 1부터 시작
-ProductsSchema.plugin( autoIncrement.plugin , { model : 'products' , field : 'id' , startAt : 1 });
+ProductsSchema.plugin( autoIncrement , { model : 'products' , field : 'id' , startAt : 1 });
 module.exports = mongoose.model('products', ProductsSchema);

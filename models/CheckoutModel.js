@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-var autoIncrement = require('mongoose-auto-increment');
+var { autoIncrement } = require('mongoose-plugin-autoinc');
 
 var CheckoutSchema = new Schema({
 
@@ -40,5 +40,5 @@ CheckoutSchema.virtual('getAmountFormat').get(function(){
 });
 
 
-CheckoutSchema.plugin( autoIncrement.plugin , { model: "checkout", field : "id", startAt : 1 });
+CheckoutSchema.plugin( autoIncrement , { model: "checkout", field : "id", startAt : 1 });
 module.exports = mongoose.model( "checkout", CheckoutSchema);

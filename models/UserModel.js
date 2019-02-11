@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-var autoIncrement = require('mongoose-auto-increment');
+var { autoIncrement } = require('mongoose-plugin-autoinc');
 
 var UserSchema = new Schema({
     username : {
@@ -18,5 +18,5 @@ var UserSchema = new Schema({
     }
 });
 
-UserSchema.plugin( autoIncrement.plugin , { model : "user", field : "id" , startAt : 1 } );
+UserSchema.plugin( autoIncrement , { model : "user", field : "id" , startAt : 1 } );
 module.exports = mongoose.model('user' , UserSchema);
